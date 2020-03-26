@@ -1,11 +1,12 @@
 %Question 5
 for i=1:6
     road_quston = [0 1 0 0 1 1;
-               1 0 1 0 0 1;
-               0 1 0 1 0 1;
-               0 0 1 0 1 1;
-               1 0 0 1 0 1;
-               1 1 1 1 1 0];
+                   1 0 1 0 0 1;
+                   0 1 0 1 0 1;
+                   0 0 1 0 1 1;
+                   1 0 0 1 0 1;
+                   1 1 1 1 1 0];
+               
     while(any(road_quston(i,:)))
         chosen = 1;
         road_quston(i,chosen) = 0;
