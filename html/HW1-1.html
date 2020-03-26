@@ -1,0 +1,478 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW1-1</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-03-20"><meta name="DC.source" content="HW1-1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Set some paremeters (block length, threshold) used in the 4 procesing steps below</a></li><li><a href="#3">Get audio data and hear it and display it</a></li><li><a href="#4">Step 1 : Data in original domain (coordinate system)</a></li><li><a href="#5">Step 2 : Transform data into new domain (coordinate system)</a></li><li><a href="#6">Step 3 : Reduce data samples in new domain because error due to data reduction will small in this domain (think : why?)</a></li><li><a href="#7">Step 4 : Transform (or map) back the reduced data to original domain (coordinate system)</a></li><li><a href="#8">part-c : Plot a block of data after each of the 4 steps.</a></li></ul></div><pre class="codeinput"><span class="comment">% Question 1</span>
+X = rand(1,80);
+Z = 60*rand(12,12);
+
+<span class="comment">% A</span>
+max(X)
+max(max(Z))
+
+<span class="comment">% B</span>
+min(X)
+min(min(Z))
+
+<span class="comment">% C</span>
+sum(X)
+sum(sum(Z))
+
+<span class="comment">% D</span>
+mean(X)
+mean(mean(Z))
+
+clear <span class="string">all</span>; close <span class="string">all</span>;
+<span class="comment">% Question 2</span>
+X= [2 4 5;4 7 6;9 8 9];
+Y= [6 4 3;3 5 2;4 5 1];
+
+<span class="comment">%(i) Matrix Multiplication</span>
+X*Y
+<span class="comment">%(ii) Elementwise Multiplication</span>
+X.*Y
+<span class="comment">%(iii) Matrix Addition</span>
+X+Y
+<span class="comment">%(iv) Scalar Addition</span>
+X+1
+<span class="comment">%(v) Matrix Multiplication (Self)</span>
+X^2
+<span class="comment">%(vi) Elementwise Squaring</span>
+X.^2
+<span class="comment">%(vii) Inverse of X</span>
+inv(X)
+<span class="comment">%(viii) (Elementwise) Scalar Multiplication</span>
+X.^(-1)
+
+W =[X;Y]
+
+Z =[X Y]
+
+R = X(2,:)
+
+E = X(1,2)
+
+
+clear <span class="string">all</span>; close <span class="string">all</span>;
+<span class="comment">%Question 3-A</span>
+
+x = linspace(-0.50,0.50)
+
+exact = log((1+x)./(1-x))
+
+apprx = 2*x + 2/3*x.^3 + 2/5*x.^5 + 2/7*x.^7 +2/9*x.^9
+
+hold;
+plot(exact,<span class="string">"-"</span>)
+plot(apprx,<span class="string">"--"</span>)
+legend(<span class="string">"exact values"</span>,<span class="string">"approximation"</span>);
+hold;
+
+miss = abs(exact-apprx)
+
+max(miss)
+mean(miss)
+
+
+clear <span class="string">all</span>; close <span class="string">all</span>;
+<span class="comment">%Question 3-B</span>
+
+x = linspace(-0.50,0.50);
+
+exact = log((1+x)./(1-x));
+apprx = 2*x;
+miss = abs(exact-apprx);
+i = 1;
+
+<span class="keyword">while</span>(any(miss &gt; 10^-3))
+    apprx = apprx + 2/(2*i+1)*(x.^(2*i+1));
+    miss = abs(exact-apprx);
+    i = i+1;
+<span class="keyword">end</span>
+
+i
+
+
+clear <span class="string">all</span>; close <span class="string">all</span>;
+<span class="comment">%Question 4</span>
+
+[x,y] = meshgrid(linspace(-5,5));
+
+func = sin(2*x)/pi./x.*sin(3*y)/pi./y;
+
+mesh(x,y,func)
+
+
+
+clear <span class="string">all</span>; close <span class="string">all</span>;
+<span class="comment">%Question 5</span>
+<span class="keyword">for</span> i=1:6
+    road_quston = [0 1 0 0 1 1;
+               1 0 1 0 0 1;
+               0 1 0 1 0 1;
+               0 0 1 0 1 1;
+               1 0 0 1 0 1;
+               1 1 1 1 1 0];
+    <span class="keyword">while</span>(any(road_quston(i,:)))
+        chosen = 1;
+        road_quston(i,chosen) = 0;
+
+        <span class="keyword">while</span>(road_quston(i,chosen) == 0)
+            chosen = random(<span class="string">'Poisson'</span>,3);
+            <span class="keyword">while</span>(chosen == 0)
+                chosen = random(<span class="string">'Poisson'</span>,3);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+
+        <span class="keyword">if</span>(road_quston(i,chosen) == 1)
+            road_quston(i,chosen) = 0;
+        <span class="keyword">end</span>
+         i = chosen;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+
+clear <span class="string">all</span>; close <span class="string">all</span>;
+</pre><pre class="codeoutput error">Error using evalin
+Undefined function or variable 'HW1'.
+</pre><h2 id="2">Set some paremeters (block length, threshold) used in the 4 procesing steps below</h2><p>block length for transformation (i.e. dimension of coordinate system)</p><pre class="codeinput">B = 512 ;
+<span class="comment">% Threshold value used to set samples in transformed domain ((i.e. new</span>
+<span class="comment">% coordinate system) to zero. Samples less than threshold will be set to 0</span>
+<span class="comment">% for data reduction (i.e compression)</span>
+Threshold = 1 * 2 * 10^(-1) ;
+</pre><h2 id="3">Get audio data and hear it and display it</h2><pre class="codeinput">[y,Fs] = audioread(<span class="string">'handel.wav'</span>);
+info = audioinfo(<span class="string">'handel.wav'</span>) ;
+y = y(1:B*floor(length(y)/B));
+sound(y,Fs);
+t = 0:1/Fs:(length(y)/Fs);
+t = t(1:end-1);
+figure, plot(t,y); title(<span class="string">'Original sound signal'</span>);
+xlabel(<span class="string">'Time'</span>)
+ylabel(<span class="string">'Audio Signal'</span>);
+set(gca,<span class="string">'YLim'</span>,[-1 1]); grid <span class="string">minor</span>;
+</pre><h2 id="4">Step 1 : Data in original domain (coordinate system)</h2><pre class="codeinput">mydata = y ;
+<span class="comment">% form block data using blocks of B successive samples</span>
+
+<span class="keyword">for</span> i=1:length(mydata)/B
+   block_data(:,i) = mydata((i-1)*B+1:i*B)' ;
+<span class="keyword">end</span>
+
+<span class="comment">% count number of nonzeros samples in mydata</span>
+num_nonzero_samples = sum(  abs(mydata(:)) &gt; 0  );
+</pre><h2 id="5">Step 2 : Transform data into new domain (coordinate system)</h2><p>get (coordinate) transformation matrix T</p><pre class="codeinput">T = dctmtx(B) ;
+<span class="comment">% apply (coordinate) transformation to every block of B=512 successive samples</span>
+
+<span class="keyword">for</span> i=1:size(block_data,2)
+   transformed_block_data(:,i) = T * block_data(:,i) ;
+<span class="keyword">end</span>
+</pre><h2 id="6">Step 3 : Reduce data samples in new domain because error due to data reduction will small in this domain (think : why?)</h2><p>apply data reduction (i.e. compression) to transformed data by setting small amplitude samples from every transformed block (i.e. with absolute value less than Threshold) to zero</p><pre class="codeinput">transformed_block_data_reduced = transformed_block_data;
+transformed_block_data_reduced( abs(transformed_block_data) &lt; Threshold ) = 0 ;
+
+<span class="comment">% count number of nonzeros samples in data after transformation and data reduction</span>
+num_nonzero_samples_after_transformation_datareduction =  sum(  abs(transformed_block_data_reduced(:)) &gt; 0  );
+</pre><h2 id="7">Step 4 : Transform (or map) back the reduced data to original domain (coordinate system)</h2><p>map transformed and reduced data back to original (coordinate system) domain</p><pre class="codeinput">invT = inv(T);
+
+<span class="keyword">for</span> i=1:size(block_data,2)
+   original_domain_approximate_block_data(:,i) = invT * transformed_block_data_reduced(:,i) ;
+<span class="keyword">end</span>
+
+pause(10); <span class="comment">% wait 10 seconds until original sound finishes playing, then play approximate sound. i.e. the sound signal obtained after 4th step</span>
+<span class="comment">% listen to the reduced (i.e. compressed) sound data and plot it again</span>
+sound(mydata, Fs);
+figure, plot(t, mydata);
+title(<span class="string">'Sound signal  after transformation, data reduction and inverse transformation to original domain (coordinate system)'</span>)
+xlabel(<span class="string">'Time'</span>)
+ylabel(<span class="string">'Audio Signal'</span>);
+set(gca,<span class="string">'YLim'</span>,[-1 1]); grid <span class="string">minor</span>;
+</pre><h2 id="8">part-c : Plot a block of data after each of the 4 steps.</h2><pre class="codeinput">M = 50;
+figure,
+subplot(4,1,1); plot(block_data(:,M));         set(gca,<span class="string">'YLim'</span>,[-2 2]); grid <span class="string">minor</span>; title(<span class="string">'Mth block of data (sound samples)'</span>)
+subplot(4,1,2); plot(transformed_block_data(:,M));         set(gca,<span class="string">'YLim'</span>,[-2 2]); grid <span class="string">minor</span>; title(<span class="string">'Transformed samples of Mth block of data'</span>);
+subplot(4,1,3); plot(transformed_block_data_reduced(:,M));         set(gca,<span class="string">'YLim'</span>,[-2 2]); grid <span class="string">minor</span>; title(<span class="string">'Reduced Transformed samples of Mth block of data'</span>);
+subplot(4,1,4); plot(original_domain_approximate_block_data(:,M));         set(gca,<span class="string">'YLim'</span>,[-2 2]); grid <span class="string">minor</span>; title(<span class="string">'Approximation of Mth block of data from reduced Transformed samples of Mth block of data'</span>);
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Question 1 
+X = rand(1,80);
+Z = 60*rand(12,12);
+
+% A
+max(X)
+max(max(Z))
+
+% B
+min(X)
+min(min(Z))
+
+% C
+sum(X)
+sum(sum(Z))
+
+% D
+mean(X)
+mean(mean(Z))
+
+clear all; close all;
+% Question 2
+X= [2 4 5;4 7 6;9 8 9];
+Y= [6 4 3;3 5 2;4 5 1];
+
+%(i) Matrix Multiplication
+X*Y
+%(ii) Elementwise Multiplication
+X.*Y
+%(iii) Matrix Addition
+X+Y
+%(iv) Scalar Addition
+X+1
+%(v) Matrix Multiplication (Self)
+X^2
+%(vi) Elementwise Squaring
+X.^2
+%(vii) Inverse of X
+inv(X)
+%(viii) (Elementwise) Scalar Multiplication
+X.^(-1)
+
+W =[X;Y]
+
+Z =[X Y]
+
+R = X(2,:)
+
+E = X(1,2)
+
+
+clear all; close all;
+%Question 3-A
+
+x = linspace(-0.50,0.50)
+
+exact = log((1+x)./(1-x))
+
+apprx = 2*x + 2/3*x.^3 + 2/5*x.^5 + 2/7*x.^7 +2/9*x.^9
+
+hold;
+plot(exact,"-")
+plot(apprx,"REPLACE_WITH_DASH_DASH")
+legend("exact values","approximation");
+hold;
+
+miss = abs(exact-apprx)
+
+max(miss)
+mean(miss)
+
+
+clear all; close all;
+%Question 3-B
+
+x = linspace(-0.50,0.50);
+
+exact = log((1+x)./(1-x));
+apprx = 2*x;
+miss = abs(exact-apprx);
+i = 1;
+
+while(any(miss > 10^-3))
+    apprx = apprx + 2/(2*i+1)*(x.^(2*i+1));
+    miss = abs(exact-apprx);
+    i = i+1;
+end
+
+i
+
+
+clear all; close all;
+%Question 4
+
+[x,y] = meshgrid(linspace(-5,5));
+
+func = sin(2*x)/pi./x.*sin(3*y)/pi./y;
+
+mesh(x,y,func)
+
+
+
+clear all; close all;
+%Question 5
+for i=1:6
+    road_quston = [0 1 0 0 1 1;
+               1 0 1 0 0 1;
+               0 1 0 1 0 1;
+               0 0 1 0 1 1;
+               1 0 0 1 0 1;
+               1 1 1 1 1 0];
+    while(any(road_quston(i,:)))
+        chosen = 1;
+        road_quston(i,chosen) = 0;
+        
+        while(road_quston(i,chosen) == 0)
+            chosen = random('Poisson',3);
+            while(chosen == 0)
+                chosen = random('Poisson',3);
+            end
+        end
+    
+        if(road_quston(i,chosen) == 1)
+            road_quston(i,chosen) = 0;
+        end
+         i = chosen;
+    end
+end
+
+
+
+clear all; close all;
+
+%% Set some paremeters (block length, threshold) used in the 4 procesing steps below 
+% block length for transformation (i.e. dimension of coordinate system)
+B = 512 ; 
+% Threshold value used to set samples in transformed domain ((i.e. new
+% coordinate system) to zero. Samples less than threshold will be set to 0
+% for data reduction (i.e compression)
+Threshold = 1 * 2 * 10^(-1) ;
+
+
+%% Get audio data and hear it and display it
+[y,Fs] = audioread('handel.wav');
+info = audioinfo('handel.wav') ;
+y = y(1:B*floor(length(y)/B));
+sound(y,Fs);
+t = 0:1/Fs:(length(y)/Fs);
+t = t(1:end-1);
+figure, plot(t,y); title('Original sound signal');
+xlabel('Time')
+ylabel('Audio Signal');
+set(gca,'YLim',[-1 1]); grid minor;
+
+
+%% Step 1 : Data in original domain (coordinate system)
+mydata = y ;
+% form block data using blocks of B successive samples
+
+for i=1:length(mydata)/B
+   block_data(:,i) = mydata((i-1)*B+1:i*B)' ; 
+end
+
+% count number of nonzeros samples in mydata
+num_nonzero_samples = sum(  abs(mydata(:)) > 0  ); 
+
+
+%% Step 2 : Transform data into new domain (coordinate system)
+% get (coordinate) transformation matrix T
+T = dctmtx(B) ;
+% apply (coordinate) transformation to every block of B=512 successive samples
+
+for i=1:size(block_data,2)
+   transformed_block_data(:,i) = T * block_data(:,i) ; 
+end
+
+
+%% Step 3 : Reduce data samples in new domain because error due to data reduction will small in this domain (think : why?)
+% apply data reduction (i.e. compression) to transformed data by setting
+% small amplitude samples from every transformed block (i.e. with absolute value less than Threshold) to zero
+
+transformed_block_data_reduced = transformed_block_data;
+transformed_block_data_reduced( abs(transformed_block_data) < Threshold ) = 0 ;
+
+% count number of nonzeros samples in data after transformation and data reduction
+num_nonzero_samples_after_transformation_datareduction =  sum(  abs(transformed_block_data_reduced(:)) > 0  );
+
+%% Step 4 : Transform (or map) back the reduced data to original domain (coordinate system)
+% map transformed and reduced data back to original (coordinate system) domain
+invT = inv(T);
+
+for i=1:size(block_data,2)
+   original_domain_approximate_block_data(:,i) = invT * transformed_block_data_reduced(:,i) ; 
+end
+
+pause(10); % wait 10 seconds until original sound finishes playing, then play approximate sound. i.e. the sound signal obtained after 4th step
+% listen to the reduced (i.e. compressed) sound data and plot it again
+sound(mydata, Fs);
+figure, plot(t, mydata); 
+title('Sound signal  after transformation, data reduction and inverse transformation to original domain (coordinate system)')
+xlabel('Time')
+ylabel('Audio Signal');
+set(gca,'YLim',[-1 1]); grid minor;
+
+
+
+%% part-c : Plot a block of data after each of the 4 steps.
+M = 50;
+figure,
+subplot(4,1,1); plot(block_data(:,M));         set(gca,'YLim',[-2 2]); grid minor; title('Mth block of data (sound samples)')
+subplot(4,1,2); plot(transformed_block_data(:,M));         set(gca,'YLim',[-2 2]); grid minor; title('Transformed samples of Mth block of data');
+subplot(4,1,3); plot(transformed_block_data_reduced(:,M));         set(gca,'YLim',[-2 2]); grid minor; title('Reduced Transformed samples of Mth block of data');
+subplot(4,1,4); plot(original_domain_approximate_block_data(:,M));         set(gca,'YLim',[-2 2]); grid minor; title('Approximation of Mth block of data from reduced Transformed samples of Mth block of data');
+
+
+
+
+##### SOURCE END #####
+--></body></html>
